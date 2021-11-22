@@ -1,0 +1,14 @@
+{
+  "name": "covidvobcich_importer",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "start": "yarn run build && node lib/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  }
+}
