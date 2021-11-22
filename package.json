@@ -1,5 +1,5 @@
 {
-  "name": "covidvobcich_importer",
+  "name": "covidvobcich-importer",
   "version": "1.0.0",
   "main": "lib/index.js",
   "license": "MIT",
@@ -10,5 +10,9 @@
   },
   "devDependencies": {
     "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "firebase-admin": "^10.0.0"
   }
 }
