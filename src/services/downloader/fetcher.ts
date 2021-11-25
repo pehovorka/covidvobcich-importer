@@ -1,30 +1,18 @@
-import axios from "axios";
 import admin = require("firebase-admin");
 
-import { sleep } from "./utils/sleep";
+import { sleep, getModifiedDate } from "./utils";
 
 export const isSuitableForDownload = async (
   fileUrl: string,
-  collectionName: string
+  collectionName: string,
+  fileName: string
 ): Promise<boolean> => {
   const collection = admin.firestore().collection(collectionName);
 
-  const getModifiedDate = async (): Promise<Date> => {
-    const response: string | void = await axios
-      .head(fileUrl)
-      .then((response) => {
-        return response.headers["last-modified"];
-      })
-      .catch((err) => console.error(err));
-    const lastModified: Date = new Date(response || "2020-01-01");
-
-    return lastModified;
-  };
-
   const isModifiedDateStable = async (): Promise<boolean> => {
-    const date1 = await getModifiedDate();
+    const date1 = await getModifiedDate(fileUrl);
     await sleep(5000);
-    const date2 = await getModifiedDate();
+    const date2 = await getModifiedDate(fileUrl);
     console.log("Stable: ", date1.getTime() === date2.getTime());
     return date1.getTime() === date2.getTime() ? true : false;
   };
@@ -35,21 +23,24 @@ export const isSuitableForDownload = async (
     if (doc.exists) {
       const storedDate: Date =
         doc.data()?.sourceUpdatedAt.toDate() ?? new Date("2020-01-01");
-      const serverDate: Date = await getModifiedDate();
+      const serverDate: Date = await getModifiedDate(fileUrl);
 
       console.log(
         "StoredDate: ",
-        storedDate.getTime(),
+        new Date(storedDate.getTime()),
         "ServerDate: ",
-        serverDate.getTime(),
+        new Date(serverDate.getTime()),
         "equal:",
         storedDate.getTime() === serverDate.getTime()
       );
 
       return storedDate.getTime() === serverDate.getTime() ? true : false;
+    } else {
+      console.log(
+        "Returning datesEqual = false (_modifiedAt doc doesn't exist in Firestore yet)..."
+      );
+      return false;
     }
-    console.log("Returning datesEqual = false (doc doesn't exist)...");
-    return false;
   };
 
   const equal = await areDatesEqual();
@@ -57,9 +48,9 @@ export const isSuitableForDownload = async (
 
   if (!stable)
     console.error(
-      "Source is not suitable for download – modified time is changing."
+      `${fileName} is not suitable for download – modified time is changing.`
     );
-  if (equal) console.info("Skipping download – dates are equal");
+  if (equal) console.info(`Skipping download of ${fileName} – dates are equal`);
 
   return !equal && stable;
 };
