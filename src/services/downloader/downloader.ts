@@ -5,17 +5,23 @@ import axios from "axios";
 import admin = require("firebase-admin");
 
 import { getModifiedDate } from "./utils";
+import { DownloadState } from ".";
+
+interface DownloadResult {
+  state: DownloadState;
+  error?: Error;
+}
 
 export const download = async (
   url: string,
   collectionName: string,
   fileName: string
-): Promise<boolean | Error> => {
+): Promise<DownloadResult> => {
   const filePath = path.join(os.tmpdir(), fileName);
   const writer = fs.createWriteStream(filePath);
   const collection = admin.firestore().collection(collectionName);
 
-  return new Promise((resolve, reject) => {
+  return new Promise<DownloadResult>((resolve, reject) => {
     axios({
       method: "get",
       url: url,
@@ -27,7 +33,7 @@ export const download = async (
           .pipe(writer)
           .on("error", (error: Error) => {
             writer.close();
-            reject(error);
+            reject({ state: DownloadState.FAILED, error: error });
           })
           .on("finish", () => {
             console.log(`🎉 ${fileName} was downloaded successfully!`);
@@ -39,11 +45,11 @@ export const download = async (
               console.log("Setting sourceUpdatedAt to " + lastModified);
               console.log(filePath);
             });
-            resolve(true);
+            resolve({ state: DownloadState.COMPLETED });
           });
       })
       .catch((error: Error) => {
-        reject(error);
+        reject({ state: DownloadState.FAILED, error: error });
       });
   });
 };
