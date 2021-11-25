@@ -22,9 +22,6 @@ export const download = async (
       responseType: "stream",
     })
       .then((response) => {
-        // ensure that the user can call `then()` only when the file has
-        // been downloaded entirely.
-
         console.log("Starting new download...");
         response.data
           .pipe(writer)
