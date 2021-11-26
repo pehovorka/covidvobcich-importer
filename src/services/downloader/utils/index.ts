@@ -1,2 +1,2 @@
-export { getModifiedDate } from "./getModifiedDate";
+export { getModifiedDate } from "./modifiedDate";
 export { sleep } from "./sleep";

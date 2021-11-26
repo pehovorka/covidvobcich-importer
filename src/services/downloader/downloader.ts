@@ -4,6 +4,7 @@ import path = require("path");
 import axios from "axios";
 import admin = require("firebase-admin");
 
+import { config } from "../../config";
 import { getModifiedDate } from "./utils";
 import { DownloadState } from ".";
 
@@ -14,12 +15,11 @@ interface DownloadResult {
 
 export const download = async (
   url: string,
-  collectionName: string,
+  collection: admin.firestore.CollectionReference,
   fileName: string
 ): Promise<DownloadResult> => {
   const filePath = path.join(os.tmpdir(), fileName);
   const writer = fs.createWriteStream(filePath);
-  const collection = admin.firestore().collection(collectionName);
 
   return new Promise<DownloadResult>((resolve, reject) => {
     axios({
@@ -40,7 +40,7 @@ export const download = async (
             getModifiedDate(url).then((lastModified) => {
               lastModified = new Date(lastModified);
               collection
-                .doc("_modifiedAt")
+                .doc(config.metadataDocName)
                 .set({ sourceUpdatedAt: lastModified }, { merge: true });
               console.log("Setting sourceUpdatedAt to " + lastModified);
               console.log(filePath);
