@@ -30,8 +30,19 @@ import {
     },
   ];
 
+  const executionStartedAt = new Date();
+  const HOUR = 3600000;
+
   try {
     for (const file of files) {
+      // Check execution time to prevent Cloud Run instance timeout
+      if (new Date().getTime() - executionStartedAt.getTime() > HOUR / 2) {
+        console.log(
+          "Execution of this instance started more than 30 minutes ago. Shutting down..."
+        );
+        return;
+      }
+
       console.log(
         `🏁🏁🏁 Execution of import flow for ${file.fileName} started! 🏁🏁🏁`
       );

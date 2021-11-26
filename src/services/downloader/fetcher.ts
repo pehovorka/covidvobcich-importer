@@ -43,13 +43,16 @@ export const isSuitableForDownload = async (
   };
 
   const equal = await areDatesEqual();
-  const stable = await isModifiedDateStable();
+  if (equal) {
+    console.info(`Skipping download of ${fileName} – dates are equal`);
+    return false;
+  }
 
+  const stable = await isModifiedDateStable();
   if (!stable)
     console.error(
       `${fileName} is not suitable for download – modified time is changing.`
     );
-  if (equal) console.info(`Skipping download of ${fileName} – dates are equal`);
 
-  return !equal && stable;
+  return stable;
 };
