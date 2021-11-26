@@ -21,12 +21,12 @@ import {
     {
       url: "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/obce.csv",
       collection: db.municipalityCases,
-      fileName: "municipalityCases.csv",
+      fileName: "municipalityCases",
     },
     {
       url: "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/ockovani-geografie.csv",
       collection: db.orpVaccinations,
-      fileName: "orpVaccinations.csv",
+      fileName: "orpVaccinations",
     },
   ];
 

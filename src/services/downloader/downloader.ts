@@ -18,7 +18,7 @@ export const download = async (
   collection: admin.firestore.CollectionReference,
   fileName: string
 ): Promise<DownloadResult> => {
-  const filePath = path.join(os.tmpdir(), fileName);
+  const filePath = path.join(os.tmpdir(), fileName + ".csv");
   const writer = fs.createWriteStream(filePath);
 
   return new Promise<DownloadResult>((resolve, reject) => {
