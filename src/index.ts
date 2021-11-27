@@ -4,9 +4,9 @@ import { config } from "./config";
 
 const server = express();
 
-server.post("/", (req, res) => {
-  app();
-  res.send(`Execution has started!`);
+server.post("/", async (req, res) => {
+  await app();
+  res.send(`Execution has finished!`);
 });
 
 const port = config.port || 8080;
