@@ -11,5 +11,4 @@ gcloud run deploy covidvobcich-importer \
   --set-env-vars="$env_vars" \
   --project=$PROJECT \
   --platform managed \
-  --allow-unauthenticated \
   --region=europe-west3
