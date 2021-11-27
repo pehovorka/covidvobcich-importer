@@ -33,18 +33,18 @@ export const sqliteToFirestoreTransformer = async (
     const BATCH_SIZE = 100;
 
     for (const municipalityId of municipalityIds) {
-      if (batch.length < BATCH_SIZE) {
-        const municipality: MunicipalityCasesCsv[] =
-          selectMunicipality.all(municipalityId);
+      const municipality: MunicipalityCasesCsv[] =
+        selectMunicipality.all(municipalityId);
 
-        municipality.sort((a, b) => {
-          return a.date > b.date ? 1 : -1;
-        });
+      municipality.sort((a, b) => {
+        return a.date > b.date ? 1 : -1;
+      });
 
-        batch.push(transform(municipality));
-      } else {
+      batch.push(transform(municipality));
+
+      if (batch.length === BATCH_SIZE) {
         try {
-          await storeToFirestore(batch, collection);
+          await storeToFirestore(batch, batchNo, BATCH_SIZE, collection);
           batch = [];
           batchNo += 1;
         } catch (error) {
@@ -52,10 +52,10 @@ export const sqliteToFirestoreTransformer = async (
         }
       }
     }
-    storeToFirestore(batch, collection)
+    storeToFirestore(batch, batchNo, BATCH_SIZE, collection)
       .then(() => {
         console.log(
-          `Successfully stored to Firestore ${
+          `🎉 Successfully stored to Firestore ${
             batchNo * BATCH_SIZE + batch.length
           } municipalities!`
         );

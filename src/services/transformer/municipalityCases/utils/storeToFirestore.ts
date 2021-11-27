@@ -4,12 +4,16 @@ import { MunicipalityCases } from "../../../../types/municipalityCases";
 
 export const storeToFirestore = async (
   chunk: MunicipalityCases[],
+  chunkNo: number,
+  chunkSize: number,
   collection: firestore.CollectionReference
 ): Promise<firestore.WriteResult[]> => {
   console.log(
-    `Storing ${chunk.length} municipalities. First municipality: ${
+    `Storing municipalities ${chunkNo * chunkSize + 1} (${
       chunk[0].municipalityName
-    }, last municipality: ${chunk[chunk.length - 1].municipalityName}.`
+    }) – ${chunkNo * chunkSize + chunk.length} (${
+      chunk[chunk.length - 1].municipalityName
+    }).`
   );
 
   const batch = firestore().batch();
