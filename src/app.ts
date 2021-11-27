@@ -3,15 +3,15 @@ initializeFirebase();
 
 import { firestore } from "firebase-admin";
 
-import { downloader, DownloadState } from "./services/downloader";
-import { collections } from "./utils/collections";
 import {
+  collections,
   isCollectionLocked,
   setCollectionLockedState,
-} from "./utils/collectionLock";
+  setCollectionUpdatedAt,
+} from "./utils";
+import { downloader, DownloadState } from "./services/downloader";
 import { csvToSqliteImporter as municipalityCasesImporter } from "./services/importer/municipalityCases";
 import { sqliteToFirestoreTransformer as municipalityCasesTransformer } from "./services/transformer/municipalityCases";
-import { setCollectionUpdatedAt } from "./utils/collectionUpdatedAt";
 
 export default async (): Promise<void> => {
   interface File {
