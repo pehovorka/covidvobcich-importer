@@ -18,7 +18,7 @@ export const sqliteToFirestoreTransformer = async (
 
   const municipalityIds: MunicipalityCases["municipalityId"][] = db
     .prepare(
-      'SELECT DISTINCT municipalityId from municipalities WHERE municipalityId IS NOT ""'
+      "SELECT DISTINCT municipalityId from municipalities WHERE municipalityId != ''"
     )
     .all()
     .map((municipality) => municipality.municipalityId);
