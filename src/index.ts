@@ -4,12 +4,14 @@ initializeFirebase();
 import { firestore } from "firebase-admin";
 
 import { downloader, DownloadState } from "./services/downloader";
-import { db } from "./utils/db";
+import { collections } from "./utils/collections";
 import {
   isCollectionLocked,
   setCollectionLockedState,
 } from "./utils/collectionLock";
 import { csvToSqliteImporter as municipalityCasesImporter } from "./services/importer/municipalityCases";
+import { sqliteToFirestoreTransformer as municipalityCasesTransformer } from "./services/transformer/municipalityCases";
+import { setCollectionUpdatedAt } from "./utils/collectionUpdatedAt";
 
 (async () => {
   interface File {
@@ -17,18 +19,23 @@ import { csvToSqliteImporter as municipalityCasesImporter } from "./services/imp
     collection: firestore.CollectionReference;
     fileName: string;
     importerFn?: (fileName: string) => Promise<boolean>;
+    transformerFn?: (
+      fileName: string,
+      collection: firestore.CollectionReference
+    ) => Promise<boolean>;
   }
 
   const files: File[] = [
     {
       url: "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/obce.csv",
-      collection: db.municipalityCases,
+      collection: collections.municipalityCases,
       fileName: "municipalityCases",
       importerFn: municipalityCasesImporter,
+      transformerFn: municipalityCasesTransformer,
     },
     {
       url: "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/ockovani-geografie.csv",
-      collection: db.orpVaccinations,
+      collection: collections.orpVaccinations,
       fileName: "orpVaccinations",
     },
   ];
@@ -68,10 +75,22 @@ import { csvToSqliteImporter as municipalityCasesImporter } from "./services/imp
       }
 
       // [✓] 7. Import from CSV to SQLite
-      if (file.importerFn) await file.importerFn(file.fileName);
+      if (file.importerFn) {
+        const importSuccessful = await file.importerFn(file.fileName);
+        if (!importSuccessful) return;
+      }
 
-      // [ ] 8. Transform from SQLite to Firestore
-      // [ ] 9. Set collectionUpdatedAt date
+      // [✓] 8. Transform from SQLite to Firestore
+      if (file.transformerFn) {
+        const transformationSuccessful = await file.transformerFn(
+          file.fileName,
+          file.collection
+        );
+        if (!transformationSuccessful) return;
+      }
+
+      // [✓] 9. Set collectionUpdatedAt date
+      await setCollectionUpdatedAt(file.collection);
       // [✓] 10. Set DB collection to unlocked state
       await setCollectionLockedState(file.collection, false);
     }
