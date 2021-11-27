@@ -40,25 +40,24 @@ export const csvToSqliteImporter = async (
     fs.createReadStream(csvFilePath)
       .pipe(csv.parse({ headers: true }))
       .on("data", (row) => {
-        if (batch.length < BATCH_SIZE) {
-          batch.push({
-            dateCode: `${row.datum}_${row.obec_kod}`,
-            date: row.datum,
-            regionId: row.kraj_nuts_kod,
-            regionName: row.kraj_nazev,
-            districtId: row.okres_lau_kod,
-            districtName: row.okres_nazev,
-            orpId: row.orp_kod,
-            orpName: row.orp_nazev,
-            municipalityId: row.obec_kod,
-            municipalityName: row.obec_nazev,
-            newCases: row.nove_pripady,
-            activeCases: row.aktivni_pripady,
-            newCases65: row.nove_pripady_65,
-            newCases7Days: row.nove_pripady_7_dni,
-            newCases14Days: row.nove_pripady_14_dni,
-          });
-        } else {
+        batch.push({
+          dateCode: `${row.datum}_${row.obec_kod}`,
+          date: row.datum,
+          regionId: row.kraj_nuts_kod,
+          regionName: row.kraj_nazev,
+          districtId: row.okres_lau_kod,
+          districtName: row.okres_nazev,
+          orpId: row.orp_kod,
+          orpName: row.orp_nazev,
+          municipalityId: row.obec_kod,
+          municipalityName: row.obec_nazev,
+          newCases: row.nove_pripady,
+          activeCases: row.aktivni_pripady,
+          newCases65: row.nove_pripady_65,
+          newCases7Days: row.nove_pripady_7_dni,
+          newCases14Days: row.nove_pripady_14_dni,
+        });
+        if (batch.length === BATCH_SIZE) {
           insertMany(batch);
           batch = [];
           batchNo += 1;

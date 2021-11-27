@@ -2,6 +2,7 @@ import {
   MunicipalityCases,
   MunicipalityCasesCsv,
 } from "../../../../types/municipalityCases";
+import { getPopulation } from "./population";
 
 export const transform = (
   municipality: MunicipalityCasesCsv[]
@@ -9,6 +10,7 @@ export const transform = (
   return {
     municipalityId: municipality[0].municipalityId,
     municipalityName: municipality[0].municipalityName,
+    municipalityPopulation: getPopulation(municipality[0].municipalityId),
     regionId: municipality[0].regionId,
     regionName: municipality[0].regionName,
     districtId: municipality[0].districtId,

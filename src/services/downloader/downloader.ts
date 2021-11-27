@@ -37,14 +37,22 @@ export const download = async (
           })
           .on("finish", () => {
             console.log(`🎉 ${fileName} was downloaded successfully!`);
-            getModifiedDate(url).then((lastModified) => {
-              lastModified = new Date(lastModified);
-              collection
-                .doc(config.metadataDocName)
-                .set({ sourceUpdatedAt: lastModified }, { merge: true });
-              console.log("Setting sourceUpdatedAt to " + lastModified);
-              console.log(filePath);
-            });
+            getModifiedDate(url)
+              .then((lastModified) => {
+                lastModified = new Date(lastModified);
+                collection
+                  .doc(config.metadataDocName)
+                  .set({ sourceUpdatedAt: lastModified }, { merge: true })
+                  .then(() => {
+                    console.log("Setting sourceUpdatedAt to " + lastModified);
+                  })
+                  .catch((error) =>
+                    reject({ state: DownloadState.FAILED, error: error })
+                  );
+              })
+              .catch((error) =>
+                reject({ state: DownloadState.FAILED, error: error })
+              );
             resolve({ state: DownloadState.COMPLETED });
           });
       })
