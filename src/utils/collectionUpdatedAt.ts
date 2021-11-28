@@ -12,3 +12,16 @@ export const setCollectionUpdatedAt = async (
   console.log(`Collection updated at was set to ${currentDate.toString()}.`);
   return doc;
 };
+
+export const getCollectionUpdatedAt = async (
+  collection: firestore.CollectionReference
+): Promise<Date | undefined> => {
+  const doc = await collection.doc(config.metadataDocName).get();
+  if (doc.exists) {
+    const storedDate: Date | undefined = doc
+      .data()
+      ?.collectionUpdatedAt?.toDate();
+    return storedDate;
+  }
+  return undefined;
+};

@@ -3,15 +3,16 @@ initializeFirebase();
 
 import { firestore } from "firebase-admin";
 
-import { downloader, DownloadState } from "./services/downloader";
-import { collections } from "./utils/collections";
 import {
+  collections,
   isCollectionLocked,
   setCollectionLockedState,
-} from "./utils/collectionLock";
+  setCollectionUpdatedAt,
+  setSourceUpdatedAt,
+} from "./utils";
+import { downloader, DownloadState } from "./services/downloader";
 import { csvToSqliteImporter as municipalityCasesImporter } from "./services/importer/municipalityCases";
 import { sqliteToFirestoreTransformer as municipalityCasesTransformer } from "./services/transformer/municipalityCases";
-import { setCollectionUpdatedAt } from "./utils/collectionUpdatedAt";
 
 export default async (): Promise<void> => {
   interface File {
@@ -63,13 +64,13 @@ export default async (): Promise<void> => {
       // [✓] 4. Check if file is suitable for download
       // [✓] 5. Download the file
       console.log(`Starting to fetch ${file.fileName}...`);
-      const downloadState = await downloader(
+      const downloadResult = await downloader(
         file.url,
         file.collection,
         file.fileName
       );
       // [✓] 6. Do not continue with import if no file was downloaded
-      if (downloadState !== DownloadState.COMPLETED) {
+      if (downloadResult.state !== DownloadState.COMPLETED) {
         await setCollectionLockedState(file.collection, false);
         continue;
       }
@@ -89,7 +90,11 @@ export default async (): Promise<void> => {
         if (!transformationSuccessful) return;
       }
 
-      // [✓] 9. Set collectionUpdatedAt date
+      // [✓] 9. Set sourceUpdatedAt and collectionUpdatedAt dates
+      await setSourceUpdatedAt(
+        file.collection,
+        downloadResult.lastModified ?? new Date("2020-01-01")
+      );
       await setCollectionUpdatedAt(file.collection);
       // [✓] 10. Set DB collection to unlocked state
       await setCollectionLockedState(file.collection, false);

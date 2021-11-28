@@ -4,14 +4,8 @@ import path = require("path");
 import axios from "axios";
 import admin = require("firebase-admin");
 
-import { config } from "../../config";
 import { getModifiedDate } from "./utils";
-import { DownloadState } from ".";
-
-interface DownloadResult {
-  state: DownloadState;
-  error?: Error;
-}
+import { DownloadResult, DownloadState } from ".";
 
 export const download = async (
   url: string,
@@ -40,20 +34,14 @@ export const download = async (
             getModifiedDate(url)
               .then((lastModified) => {
                 lastModified = new Date(lastModified);
-                collection
-                  .doc(config.metadataDocName)
-                  .set({ sourceUpdatedAt: lastModified }, { merge: true })
-                  .then(() => {
-                    console.log("Setting sourceUpdatedAt to " + lastModified);
-                  })
-                  .catch((error) =>
-                    reject({ state: DownloadState.FAILED, error: error })
-                  );
+                resolve({
+                  state: DownloadState.COMPLETED,
+                  lastModified: lastModified,
+                });
               })
               .catch((error) =>
                 reject({ state: DownloadState.FAILED, error: error })
               );
-            resolve({ state: DownloadState.COMPLETED });
           });
       })
       .catch((error: Error) => {

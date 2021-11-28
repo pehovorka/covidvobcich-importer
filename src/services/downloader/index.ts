@@ -2,6 +2,12 @@ import { firestore } from "firebase-admin";
 import { download } from "./downloader";
 import { isSuitableForDownload } from "./fetcher";
 
+export interface DownloadResult {
+  state: DownloadState;
+  lastModified?: Date;
+  error?: Error;
+}
+
 export enum DownloadState {
   COMPLETED = "completed",
   SKIPPED = "skipped",
@@ -12,11 +18,15 @@ export const downloader = async (
   url: string,
   collection: firestore.CollectionReference,
   fileName: string
-): Promise<DownloadState> => {
+): Promise<DownloadResult> => {
   const suitable = await isSuitableForDownload(url, collection, fileName);
-  if (!suitable) return DownloadState.SKIPPED;
+  if (!suitable) return { state: DownloadState.SKIPPED };
 
   const downloadResult = await download(url, collection, fileName);
   if (downloadResult.error) console.error(downloadResult.error);
-  return downloadResult.state;
+  return {
+    state: downloadResult.state,
+    error: downloadResult.error,
+    lastModified: downloadResult.lastModified,
+  };
 };

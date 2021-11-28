@@ -1,7 +1,7 @@
 import admin = require("firebase-admin");
 
-import { config } from "../../config";
 import { sleep, getModifiedDate } from "./utils";
+import { getSourceUpdatedAt } from "../../utils/sourceUpdatedAt";
 
 export const isSuitableForDownload = async (
   fileUrl: string,
@@ -17,11 +17,9 @@ export const isSuitableForDownload = async (
   };
 
   const areDatesEqual = async (): Promise<boolean> => {
-    const doc = await collection.doc(config.metadataDocName).get();
+    const storedDate = await getSourceUpdatedAt(collection);
 
-    if (doc.exists) {
-      const storedDate: Date =
-        doc.data()?.sourceUpdatedAt?.toDate() ?? new Date("2020-01-01");
+    if (storedDate) {
       const serverDate: Date = await getModifiedDate(fileUrl);
 
       console.log(
