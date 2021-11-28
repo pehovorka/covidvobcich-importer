@@ -6,7 +6,7 @@ const server = express();
 
 server.post("/", async (req, res) => {
   await app();
-  res.send(`Execution has finished!`);
+  res.send("Execution has finished!");
 });
 
 const port = config.port || 8080;

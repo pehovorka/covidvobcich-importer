@@ -15,12 +15,18 @@
     "node": ">= 14.0.0"
   },
   "dependencies": {
+    "@types/better-sqlite3": "^7.4.1",
     "axios": "^0.24.0",
     "better-sqlite3": "^7.4.5",
     "express": "^4.17.1",
     "fast-csv": "^4.3.6",
     "firebase-admin": "^10.0.0",
-    "typescript": "^4.5.2",
-    "@types/better-sqlite3": "^7.4.1"
+    "typescript": "^4.5.2"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.3.0",
+    "eslint-plugin-import": "^2.25.3"
   }
 }

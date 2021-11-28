@@ -27,40 +27,42 @@ export const sqliteToFirestoreTransformer = async (
     "SELECT * FROM municipalities WHERE municipalityId = ?"
   );
 
-  return new Promise(async (resolve, reject) => {
-    let batch: MunicipalityCases[] = [];
-    let batchNo = 0;
-    const BATCH_SIZE = 100;
+  let batch: MunicipalityCases[] = [];
+  let batchNo = 0;
+  const BATCH_SIZE = 100;
 
-    for (const municipalityId of municipalityIds) {
-      const municipality: MunicipalityCasesCsv[] =
-        selectMunicipality.all(municipalityId);
+  for (const municipalityId of municipalityIds) {
+    const municipality: MunicipalityCasesCsv[] =
+      selectMunicipality.all(municipalityId);
 
-      municipality.sort((a, b) => {
-        return a.date > b.date ? 1 : -1;
-      });
+    municipality.sort((a, b) => {
+      return a.date > b.date ? 1 : -1;
+    });
 
-      batch.push(transform(municipality));
+    batch.push(transform(municipality));
 
-      if (batch.length === BATCH_SIZE) {
-        try {
-          await storeToFirestore(batch, batchNo, BATCH_SIZE, collection);
-          batch = [];
-          batchNo += 1;
-        } catch (error) {
-          return reject(error);
-        }
+    if (batch.length === BATCH_SIZE) {
+      try {
+        await storeToFirestore(batch, batchNo, BATCH_SIZE, collection);
+        batch = [];
+        batchNo += 1;
+      } catch (error) {
+        console.error(error);
+        return false;
       }
     }
-    storeToFirestore(batch, batchNo, BATCH_SIZE, collection)
-      .then(() => {
-        console.log(
-          `🎉 Successfully stored to Firestore ${
-            batchNo * BATCH_SIZE + batch.length
-          } municipalities!`
-        );
-        return resolve(true);
-      })
-      .catch((error: Error) => reject(error));
-  });
+  }
+
+  try {
+    await storeToFirestore(batch, batchNo, BATCH_SIZE, collection);
+    console.log(
+      `🎉 Successfully stored ${
+        batchNo * BATCH_SIZE + batch.length
+      } municipalities to Firestore!`
+    );
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 };
