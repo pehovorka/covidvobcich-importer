@@ -19,6 +19,8 @@ export const downloader = async (
   collection: firestore.CollectionReference,
   fileName: string
 ): Promise<DownloadResult> => {
+  console.log(`Starting to fetch ${fileName}...`);
+
   const suitable = await isSuitableForDownload(url, collection, fileName);
   if (!suitable) return { state: DownloadState.SKIPPED };
 

@@ -9,6 +9,7 @@ import {
   setCollectionLockedState,
   setCollectionUpdatedAt,
   setSourceUpdatedAt,
+  storeImporterVersion,
 } from "./utils";
 import { downloader, DownloadState } from "./services/downloader";
 import { csvToSqliteImporter as municipalityCasesImporter } from "./services/importer/municipalityCases";
@@ -46,7 +47,7 @@ export default async (): Promise<void> => {
 
   try {
     for (const file of files) {
-      // [✓] 1. Check execution time to prevent Cloud Run instance timeout
+      // 1. Check execution time to prevent Cloud Run instance timeout
       if (new Date().getTime() - executionStartedAt.getTime() > HOUR / 2) {
         console.log(
           "Execution of this instance started more than 30 minutes ago. Shutting down..."
@@ -57,31 +58,32 @@ export default async (): Promise<void> => {
       console.log(
         `🏁🏁🏁 Execution of import flow for ${file.fileName} started! 🏁🏁🏁`
       );
-      // [✓] 2. Check if DB collection is not locked (if it's been more than 1hr since the DB was locked, unlock it and continue)
+      // 2. Check if DB collection is not locked (if it's been more than 1hr since the DB was locked, unlock it and continue)
       if (await isCollectionLocked(file.collection)) continue;
-      // [✓] 3. Set DB collection to locked state
+
+      // 3. Set DB collection to locked state
       await setCollectionLockedState(file.collection, true);
-      // [✓] 4. Check if file is suitable for download
-      // [✓] 5. Download the file
-      console.log(`Starting to fetch ${file.fileName}...`);
+
+      // 4. Check if the file is suitable for download (and download it eventually)
       const downloadResult = await downloader(
         file.url,
         file.collection,
         file.fileName
       );
-      // [✓] 6. Do not continue with import if no file was downloaded
+
+      // 5. Do not continue with import if no file was downloaded
       if (downloadResult.state !== DownloadState.COMPLETED) {
         await setCollectionLockedState(file.collection, false);
         continue;
       }
 
-      // [✓] 7. Import from CSV to SQLite
+      // 6. Import from CSV to SQLite
       if (file.importerFn) {
         const importSuccessful = await file.importerFn(file.fileName);
         if (!importSuccessful) return;
       }
 
-      // [✓] 8. Transform from SQLite to Firestore
+      // 7. Transform from SQLite to Firestore
       if (file.transformerFn) {
         const transformationSuccessful = await file.transformerFn(
           file.fileName,
@@ -90,14 +92,17 @@ export default async (): Promise<void> => {
         if (!transformationSuccessful) return;
       }
 
-      // [✓] 9. Set sourceUpdatedAt and collectionUpdatedAt dates
+      // 8. Set sourceUpdatedAt and collectionUpdatedAt dates
       await setSourceUpdatedAt(
         file.collection,
         downloadResult.lastModified ?? new Date("2020-01-01")
       );
       await setCollectionUpdatedAt(file.collection);
-      // [✓] 10. Set DB collection to unlocked state
+
+      // 9. Set DB collection to unlocked state
       await setCollectionLockedState(file.collection, false);
+
+      await storeImporterVersion();
     }
   } catch (error) {
     console.error(error);
