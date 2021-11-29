@@ -9,11 +9,11 @@ import {
   setCollectionLockedState,
   setCollectionUpdatedAt,
   setSourceUpdatedAt,
+  storeImporterVersion,
 } from "./utils";
 import { downloader, DownloadState } from "./services/downloader";
 import { csvToSqliteImporter as municipalityCasesImporter } from "./services/importer/municipalityCases";
 import { sqliteToFirestoreTransformer as municipalityCasesTransformer } from "./services/transformer/municipalityCases";
-import { storeImporterVersion } from "./utils/storeImporterVersion";
 
 export default async (): Promise<void> => {
   interface File {
