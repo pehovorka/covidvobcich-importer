@@ -12,8 +12,9 @@ import {
   storeImporterVersion,
 } from "./utils";
 import { downloader, DownloadState } from "./services/downloader";
-import { csvToSqliteImporter as municipalityCasesImporter } from "./services/importer/municipalityCases";
-import { sqliteToFirestoreTransformer as municipalityCasesTransformer } from "./services/transformer/municipalityCases";
+import { orpVaccinationsImporter } from "./services/importer/orpVaccinations";
+import { municipalityCasesImporter } from "./services/importer/municipalityCases";
+import { municipalityCasesTransformer } from "./services/transformer/municipalityCases";
 
 export default async (): Promise<void> => {
   interface File {
@@ -39,6 +40,7 @@ export default async (): Promise<void> => {
       url: "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/ockovani-geografie.csv",
       collection: collections.orpVaccinations,
       fileName: "orpVaccinations",
+      importerFn: orpVaccinationsImporter,
     },
   ];
 
