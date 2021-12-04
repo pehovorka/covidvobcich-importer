@@ -1,1 +1,1 @@
-export { sqliteToFirestoreTransformer as municipalityCasesTransformer } from "./sqliteToFirestoreTransformer";
+export { municipalityCasesTransformer } from "./municipalityCasesTransformer";

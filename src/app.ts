@@ -13,6 +13,7 @@ import {
 } from "./utils";
 import { downloader, DownloadState } from "./services/downloader";
 import { orpVaccinationsImporter } from "./services/importer/orpVaccinations";
+import { orpVaccinationsTransformer } from "./services/transformer/orpVaccinations";
 import { municipalityCasesImporter } from "./services/importer/municipalityCases";
 import { municipalityCasesTransformer } from "./services/transformer/municipalityCases";
 
@@ -41,6 +42,7 @@ export default async (): Promise<void> => {
       collection: collections.orpVaccinations,
       fileName: "orpVaccinations",
       importerFn: orpVaccinationsImporter,
+      transformerFn: orpVaccinationsTransformer,
     },
   ];
 

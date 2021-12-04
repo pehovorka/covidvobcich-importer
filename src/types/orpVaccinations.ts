@@ -1,28 +1,35 @@
-export interface OrpVaccinations {
+export interface Orp {
   orpId: number;
-  orpName?: string;
-  regionId: string;
-  regionName?: string;
+  orpName: string;
+  orpPopulation?: number;
+}
+
+export interface OrpVaccinations extends Orp {
   days: DayVaccinations[];
+  vaccineNames: VaccineNames[];
 }
 
-interface DayVaccinations {
+export interface DayVaccinations {
   date: string;
-  dosesOrder: DosesOrder[];
-  vaccineTypes: VaccineType[];
+  doses: DosesOrder[];
+  vaccines: VaccineType[];
 }
 
-interface DosesOrder {
-  doseOrder: number;
-  newDoses: number;
-  totalDoses: number;
+export interface DosesOrder {
+  o: number;
+  nd: number;
+  td: number;
 }
 
-interface VaccineType {
+export interface VaccineType {
+  v: string;
+  nd: number;
+  td: number;
+}
+
+export interface VaccineNames {
   vaccineId: string;
   vaccineName: string;
-  newDoses: number;
-  totalDoses: number;
 }
 
 export interface OrpVaccinationsCsv {
@@ -30,10 +37,10 @@ export interface OrpVaccinationsCsv {
   date: DayVaccinations["date"];
   orpId: OrpVaccinations["orpId"];
   orpName: OrpVaccinations["orpName"];
-  regionId: OrpVaccinations["regionId"];
-  regionName: OrpVaccinations["regionName"];
-  vaccineId: VaccineType["vaccineId"];
-  vaccineName: VaccineType["vaccineName"];
-  doseOrder: DosesOrder["doseOrder"];
-  newDoses: DosesOrder["newDoses"];
+  regionId: string;
+  regionName: string;
+  vaccineId: VaccineType["v"];
+  vaccineName: string;
+  doseOrder: DosesOrder["o"];
+  newDoses: DosesOrder["nd"];
 }
