@@ -8,7 +8,7 @@ import { createTable, createIndex, insert } from "./utils/sqlCommands";
 
 import { MunicipalityCasesCsv } from "../../../types/municipalityCases";
 
-export const csvToSqliteImporter = async (
+export const municipalityCasesImporter = async (
   fileName: string
 ): Promise<boolean> => {
   const csvFilePath = path.join(os.tmpdir(), fileName + ".csv");

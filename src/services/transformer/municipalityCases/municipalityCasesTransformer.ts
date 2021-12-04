@@ -9,7 +9,7 @@ import {
 } from "../../../types/municipalityCases";
 import { storeToFirestore, transform } from "./utils";
 
-export const sqliteToFirestoreTransformer = async (
+export const municipalityCasesTransformer = async (
   fileName: string,
   collection: firestore.CollectionReference
 ): Promise<boolean> => {
