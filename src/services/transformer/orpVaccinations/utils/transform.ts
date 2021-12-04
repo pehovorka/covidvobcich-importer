@@ -28,6 +28,7 @@ export const transform = (
         .filter("doseOrder")
         .concat(distinctDoseOrders)
         .unionBy("doseOrder")
+        .sortBy("doseOrder")
         .map((doseObj) => ({
           o: doseObj.doseOrder,
           nd: doseObj.newDoses || 0,
@@ -39,6 +40,7 @@ export const transform = (
         .filter("vaccineId")
         .concat(distinctVaccines)
         .unionBy("vaccineId")
+        .sortBy("vaccineId")
         .map((vaccineObj) => ({
           v: vaccineObj.vaccineId,
           nd: vaccineObj.newDoses || 0,
