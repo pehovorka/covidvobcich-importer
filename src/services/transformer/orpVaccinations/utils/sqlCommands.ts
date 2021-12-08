@@ -1,9 +1,35 @@
+export const selectDistinctDates = `
+SELECT DISTINCT
+	date
+FROM 
+    orpVaccinations
+ORDER BY 
+    date;
+`;
+
 export const selectDistinctOrps = `
 SELECT DISTINCT 
     orpId, 
     orpName 
-FROM orpVaccinations 
-WHERE orpId != ''
+FROM 
+    orpVaccinations 
+WHERE 
+    orpId != ''
+`;
+
+export const selectDistinctVaccines = `
+SELECT DISTINCT 
+    vaccineId, 
+    vaccineName 
+FROM 
+    orpVaccinations
+`;
+
+export const selectDistinctDoseOrders = `
+SELECT DISTINCT 
+    doseOrder
+FROM
+    orpVaccinations
 `;
 
 export const selectOrpDosesOrder = `
@@ -38,19 +64,4 @@ GROUP BY
 ORDER BY
     date,
     vaccineId;
-`;
-
-export const selectDistinctVaccines = `
-SELECT DISTINCT 
-    vaccineId, 
-    vaccineName 
-FROM 
-    orpVaccinations
-`;
-
-export const selectDistinctDoseOrders = `
-SELECT DISTINCT 
-    doseOrder
-FROM
-    orpVaccinations
 `;

@@ -19,10 +19,15 @@ import {
   selectDistinctVaccines,
   selectOrpDosesOrder,
   selectOrpVaccines,
+  selectDistinctDates,
 } from "./utils";
 
 export interface DistinctDoseOrder {
   doseOrder: number;
+}
+
+export interface DistinctDate {
+  date: string;
 }
 
 export interface DbResult {
@@ -44,7 +49,7 @@ export const orpVaccinationsTransformer = async (
   const dbFilePath = path.join(os.tmpdir(), fileName + ".db");
   const db = new Database(dbFilePath, {});
 
-  // Get all ORPs, vaccine types and dose orders
+  // Get all ORPs, vaccine types, dose orders and dates
   const orps: Orp[] = db
     .prepare(selectDistinctOrps)
     .all()
@@ -57,6 +62,8 @@ export const orpVaccinationsTransformer = async (
   const distinctDoseOrders: DistinctDoseOrder[] = db
     .prepare(selectDistinctDoseOrders)
     .all();
+
+  const distinctDates: DistinctDate[] = db.prepare(selectDistinctDates).all();
 
   // Prepare statements for calls in for loop
   const orpDosesOrderStatement = db.prepare(selectOrpDosesOrder);
@@ -85,6 +92,7 @@ export const orpVaccinationsTransformer = async (
     const days: DayVaccinations[] = transform(
       orpDosesOrderResult,
       orpVaccinesResult,
+      distinctDates,
       distinctDoseOrders,
       distinctVaccines,
       totalDoseOrders,

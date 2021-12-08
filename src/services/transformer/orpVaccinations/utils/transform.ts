@@ -7,6 +7,7 @@ import {
 } from "../../../../types/orpVaccinations";
 import {
   DbResult,
+  DistinctDate,
   DistinctDoseOrder,
   TotalSum,
 } from "../orpVaccinationsTransformer";
@@ -14,6 +15,7 @@ import {
 export const transform = (
   orpDosesOrderResult: DbResult[],
   orpVaccinesResult: DbResult[],
+  distinctDates: DistinctDate[],
   distinctDoseOrders: DistinctDoseOrder[],
   distinctVaccines: VaccineNames[],
   totalDoseOrders: TotalSum,
@@ -21,6 +23,8 @@ export const transform = (
 ): DayVaccinations[] =>
   _(orpDosesOrderResult)
     .concat(orpVaccinesResult)
+    .concat(distinctDates)
+    .sortBy("date")
     .groupBy("date")
     .map((objects, key) => ({
       date: key as string,
