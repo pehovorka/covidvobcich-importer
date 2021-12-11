@@ -3,7 +3,7 @@ import { municipalitiesPopulation } from "../assets/municipalitiesPopulation";
 
 export const getPopulation = (
   municipalityId: MunicipalityCases["municipalityId"]
-): number | undefined => {
+): MunicipalityCases["municipalityPopulation"] | undefined => {
   const municipality = municipalitiesPopulation.find(
     (municipality) => municipality.id === municipalityId
   );

@@ -10,7 +10,7 @@ export const isCollectionLocked = async (
   const lockedUpdatedAt: Date = doc.data()?.lockedUpdatedAt?.toDate();
 
   if (
-    lockedUpdatedAt &&
+    lockedState &&
     (new Date().getTime() - lockedUpdatedAt.getTime()) / 1000 > HOUR
   ) {
     console.log(

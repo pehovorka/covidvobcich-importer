@@ -1,1 +1,1 @@
-export { csvToSqliteImporter } from "./csvToSqliteImporter";
+export { municipalityCasesImporter } from "./municipalityCasesImporter";
