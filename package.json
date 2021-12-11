@@ -10,7 +10,10 @@
     "dev": "yarn run build && node lib/index.local.js",
     "start": "node lib/index.js",
     "deploy": "yarn build && (yarn deploy:app)",
-    "deploy:app": "./bin/deploy.sh"
+    "deploy:app": "./bin/deploy.sh",
+    "release": "yarn version",
+    "version": "yarn changelog && code CHANGELOG.md --wait && git add CHANGELOG.md",
+    "changelog": "gitmoji-changelog"
   },
   "engines": {
     "node": ">= 14.0.0"
@@ -30,6 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.3.0",
-    "eslint-plugin-import": "^2.25.3"
+    "eslint-plugin-import": "^2.25.3",
+    "gitmoji-changelog": "^2.2.1"
   }
 }
