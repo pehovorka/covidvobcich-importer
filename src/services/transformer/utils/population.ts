@@ -1,4 +1,4 @@
-import { MunicipalityCases } from "../../../../types/municipalityCases";
+import { MunicipalityCases } from "../../../types/municipalityCases";
 import { municipalitiesPopulation } from "../assets/municipalitiesPopulation";
 
 export const getPopulation = (
