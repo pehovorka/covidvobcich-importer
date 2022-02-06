@@ -32,8 +32,9 @@ export const municipalityCasesOverviewTransformer = async (
     )
     .all();
 
-  const transformedData: MunicipalityCasesOverview[] =
-    currentMunicipalityCases.map((municipality) => ({
+  const transformedData: MunicipalityCasesOverview[] = currentMunicipalityCases
+    .filter((municipality) => municipality.municipalityId)
+    .map((municipality) => ({
       id: municipality.municipalityId,
       mn: municipality.municipalityName,
       dn: municipality.districtName,
