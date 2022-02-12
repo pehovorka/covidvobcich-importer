@@ -16,6 +16,7 @@ import { orpVaccinationsImporter } from "./services/importer/orpVaccinations";
 import { orpVaccinationsTransformer } from "./services/transformer/orpVaccinations";
 import { municipalityCasesImporter } from "./services/importer/municipalityCases";
 import { municipalityCasesTransformer } from "./services/transformer/municipalityCases";
+import { municipalityCasesOverviewTransformer } from "./services/transformer/municipalityCasesOverview/municipalityCasesOverviewTransformer";
 
 export default async (): Promise<void> => {
   interface File {
@@ -24,6 +25,10 @@ export default async (): Promise<void> => {
     fileName: string;
     importerFn?: (fileName: string) => Promise<boolean>;
     transformerFn?: (
+      fileName: string,
+      collection: firestore.CollectionReference
+    ) => Promise<boolean>;
+    overviewTransformerFn?: (
       fileName: string,
       collection: firestore.CollectionReference
     ) => Promise<boolean>;
@@ -36,6 +41,7 @@ export default async (): Promise<void> => {
       fileName: "municipalityCases",
       importerFn: municipalityCasesImporter,
       transformerFn: municipalityCasesTransformer,
+      overviewTransformerFn: municipalityCasesOverviewTransformer,
     },
     {
       url: "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/ockovani-geografie.csv",
@@ -62,6 +68,7 @@ export default async (): Promise<void> => {
       console.log(
         `🏁🏁🏁 Execution of import flow for ${file.fileName} started! 🏁🏁🏁`
       );
+
       // 2. Check if DB collection is not locked (if it's been more than 1hr since the DB was locked, unlock it and continue)
       if (await isCollectionLocked(file.collection)) continue;
 
@@ -87,7 +94,7 @@ export default async (): Promise<void> => {
         if (!importSuccessful) return;
       }
 
-      // 7. Transform from SQLite to Firestore
+      // 7. Transform each municipality from SQLite to Firestore
       if (file.transformerFn) {
         const transformationSuccessful = await file.transformerFn(
           file.fileName,
@@ -96,14 +103,23 @@ export default async (): Promise<void> => {
         if (!transformationSuccessful) return;
       }
 
-      // 8. Set sourceUpdatedAt and collectionUpdatedAt dates
+      // 8. Transform and store overview of all municipalities from SQLite to Firestore
+      if (file.overviewTransformerFn) {
+        const transformationSuccessful = await file.overviewTransformerFn(
+          file.fileName,
+          file.collection
+        );
+        if (!transformationSuccessful) return;
+      }
+
+      // 9. Set sourceUpdatedAt and collectionUpdatedAt dates
       await setSourceUpdatedAt(
         file.collection,
         downloadResult.lastModified ?? new Date("2020-01-01")
       );
       await setCollectionUpdatedAt(file.collection);
 
-      // 9. Set DB collection to unlocked state
+      // 10. Set DB collection to unlocked state
       await setCollectionLockedState(file.collection, false);
 
       await storeImporterVersion();

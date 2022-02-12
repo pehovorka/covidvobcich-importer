@@ -2,7 +2,7 @@ import {
   MunicipalityCases,
   MunicipalityCasesCsv,
 } from "../../../../types/municipalityCases";
-import { getPopulation } from "./population";
+import { getPopulation } from "../../utils/population";
 
 export const transform = (
   municipality: MunicipalityCasesCsv[]

@@ -37,3 +37,13 @@ export interface MunicipalityCasesCsv {
   newCases7Days: DayCases["nc7d"];
   newCases14Days: DayCases["nc14d"];
 }
+
+export interface MunicipalityCasesOverview {
+  id: MunicipalityCases["municipalityId"];
+  mn: MunicipalityCases["municipalityName"];
+  dn?: MunicipalityCases["districtName"];
+  d: DayCases["d"];
+  ac: DayCases["ac"];
+  nc: DayCases["nc"];
+  rc: number | null;
+}
