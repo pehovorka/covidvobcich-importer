@@ -1,25 +1,18 @@
 # Changelog
 
-<a name="1.2.0"></a>
+<a name="1.2.1"></a>
 
-## 1.2.0 (2022-02-06)
-
-### Added
-
-- ✨ Add municipality cases overview transformer [[8cbef98](https://github.com/pehovorka/covidvobcich-importer/commit/8cbef988091dad8783be08e91e0b862be8f3dd9d)]
+## 1.2.1 (2022-07-29)
 
 ### Fixed
 
-- 🐛 Filter empty municipality id values [[79deda5](https://github.com/pehovorka/covidvobcich-importer/commit/79deda58b8252bacc8d3170dfb2fc412f6b579fb)]
-
-### Miscellaneous
-
-- Merge pull request [#7](https://github.com/pehovorka/covidvobcich-importer/issues/7) from pehovorka/feat/active-cases-overview [[e396e9f](https://github.com/pehovorka/covidvobcich-importer/commit/e396e9fab2791dacbcf98badd57e9e6cda49e0eb)]
+- 🚑 Fix too large transaction for vaccinations [[999522a](https://github.com/pehovorka/covidvobcich-importer/commit/999522a288a13ad76e469effb99b5df98ccbc123)]
 
 ## Older versions
 
 ### Added
 
+- ✨ Add municipality cases overview transformer [[8cbef98](https://github.com/pehovorka/covidvobcich-importer/commit/8cbef988091dad8783be08e91e0b862be8f3dd9d)]
 - ➕ Add gitmoji-changelog [[f74220e](https://github.com/pehovorka/covidvobcich-importer/commit/f74220e073bb2116eee733cc89a86404dfd66f4e)]
 - ✨ Add ORP vaccinations transformer [[4bee17a](https://github.com/pehovorka/covidvobcich-importer/commit/4bee17a4f3cf73120485f84c032a5044065ed153)]
 - ✨ Add ORP vaccinations SQLite importer [[2690a18](https://github.com/pehovorka/covidvobcich-importer/commit/2690a1871ae680de52c34e56ea1519f45af4fab2)]
@@ -47,6 +40,7 @@
 
 ### Fixed
 
+- 🐛 Filter empty municipality id values [[79deda5](https://github.com/pehovorka/covidvobcich-importer/commit/79deda58b8252bacc8d3170dfb2fc412f6b579fb)]
 - 🚑 Fix too big Firebase transaction [[2a6ad76](https://github.com/pehovorka/covidvobcich-importer/commit/2a6ad7690af8d8d7279ea9d83f59c54052711dfc)]
 - 🐛 Fix missing dates when no administered doses [[622c264](https://github.com/pehovorka/covidvobcich-importer/commit/622c264b64387193bea36b459d0239be5b0dc616)]
 - 🐛 Fix false return of collection locked state [[7bfcb62](https://github.com/pehovorka/covidvobcich-importer/commit/7bfcb621ffae03cc476d71838f9ec95569017fd1)]
@@ -56,6 +50,7 @@
 
 ### Miscellaneous
 
+- Merge pull request [#7](https://github.com/pehovorka/covidvobcich-importer/issues/7) from pehovorka/feat/active-cases-overview [[e396e9f](https://github.com/pehovorka/covidvobcich-importer/commit/e396e9fab2791dacbcf98badd57e9e6cda49e0eb)]
 - Merge pull request [#4](https://github.com/pehovorka/covidvobcich-importer/issues/4) from pehovorka/feat/orp-vaccinations [[50bfef1](https://github.com/pehovorka/covidvobcich-importer/commit/50bfef1c2b8330c7b83fd15285d697547af231a7)]
 - 📝 Add available commands to README [[a4fa0ad](https://github.com/pehovorka/covidvobcich-importer/commit/a4fa0ad110f2889479751ffb11a7f19df9b9cc58)]
 - 👔 Move set sourceUpdatedAt after transformer [[ca42689](https://github.com/pehovorka/covidvobcich-importer/commit/ca42689ee4188121dfd21a302363fa9d79fd1f76)]
