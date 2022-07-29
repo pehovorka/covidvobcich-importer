@@ -71,7 +71,7 @@ export const orpVaccinationsTransformer = async (
 
   let batch: OrpVaccinations[] = [];
   let batchNo = 0;
-  const BATCH_SIZE = 20;
+  const BATCH_SIZE = 5;
 
   for (const orp of orps) {
     const orpDosesOrderResult: DbResult[] = orpDosesOrderStatement.all(
