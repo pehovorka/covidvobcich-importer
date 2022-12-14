@@ -1,5 +1,13 @@
 # Changelog
 
+<a name="1.2.2"></a>
+
+## 1.2.2 (2022-12-14)
+
+### Fixed
+
+- 🚑 Fix too large Firebase transactions [[f595c4d](https://github.com/pehovorka/covidvobcich-importer/commit/f595c4d762f74c16b3c118c2db905f5389852579)]
+
 <a name="1.2.1"></a>
 
 ## 1.2.1 (2022-07-29)
