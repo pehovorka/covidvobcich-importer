@@ -29,7 +29,7 @@ export const municipalityCasesTransformer = async (
 
   let batch: MunicipalityCases[] = [];
   let batchNo = 0;
-  const BATCH_SIZE = 100;
+  const BATCH_SIZE = 25;
 
   for (const municipalityId of municipalityIds) {
     const municipality: MunicipalityCasesCsv[] =
